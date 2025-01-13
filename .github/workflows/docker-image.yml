@@ -8,6 +8,11 @@ on:
         required: true
         default: ''
 
+env:
+  ALIYUN_REGISTRY: "registry.cn-hangzhou.aliyuncs.com"
+  ALIYUN_REGISTRY_USER: "${{ secrets.ALIYUN_REGISTRY_USER }}"
+  ALIYUN_REGISTRY_PASSWORD: "${{ secrets.ALIYUN_REGISTRY_PASSWORD }}"
+
 jobs:
   build_and_push:
     name: Push Docker image to Docker Hub
@@ -55,7 +60,7 @@ jobs:
             run: docker tag answerhuang/fabulove:${{ github.event.inputs.image_tag }} great_free/fabulove:${{ github.event.inputs.image_tag }}
           - name: Login Aliyun
             id: login
-            run: docker login -u $DOCKER_USERNAME_ALIYUN -p $DOCKER_PASSWORD_ALIYUN registry.cn-hangzhou.aliyuncs.com
+            run: docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
           - name: Push to Aliyun
             id: push_aliyun
             run: docker push registry.cn-hangzhou.aliyuncs.com/great_free/fabulove:${{ github.event.inputs.image_tag }}
