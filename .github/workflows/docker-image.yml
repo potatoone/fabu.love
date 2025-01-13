@@ -60,7 +60,11 @@ jobs:
             run: docker tag answerhuang/fabulove:${{ github.event.inputs.image_tag }} great_free/fabulove:${{ github.event.inputs.image_tag }}
           - name: Login Aliyun
             id: login
-            run: docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
+            run: |
+              echo $ALIYUN_REGISTRY_USER
+              echo $ALIYUN_REGISTRY_PASSWORD
+              echo $ALIYUN_REGISTRY
+              docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
           - name: Push to Aliyun
             id: push_aliyun
             run: docker push registry.cn-hangzhou.aliyuncs.com/great_free/fabulove:${{ github.event.inputs.image_tag }}
