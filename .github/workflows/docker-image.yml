@@ -1,26 +1,23 @@
 name: Docker Image CI
 
+# on:
+#   push:
+#     branches: [ "master" ]
+#   pull_request:
+#     branches: [ "master" ]
+
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Please input image tag'
+        required: true
+        default: ''
 
 jobs:
-
-  # build:
-
-    # runs-on: ubuntu-latest
-
-    # steps:
-    # - uses: actions/checkout@v4
-    # - name: Build the Docker image
-      # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
-      # run: docker buildx build -t fabulove:$(date +%s) --platform=linux/amd64 -f docker/Dockerfile .
-
   build_and_push:
     name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
           packages: write
           contents: read
@@ -42,6 +39,14 @@ jobs:
             with:
               images: answerhuang/fabulove
 
+          - name: Set current timestamp
+            id: timestamp
+            run: echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+
+          - name: Set default image tag if not provided
+            if: ${{ github.event.inputs.image_tag == '' }}
+            run: echo "IMAGE_TAG=${{ env.TIMESTAMP }}" >> $GITHUB_ENV
+
           - name: Build and push Docker image
             id: push
             uses: docker/build-push-action@v3
@@ -49,12 +54,14 @@ jobs:
               context: .
               file: ./docker/Dockerfile
               push: true
-              tags: latest
+              tags: answerhuang/fabulove:${{ github.event.inputs.image_tag }}
               labels: ${{ steps.meta.outputs.labels }}
-
-          # - name: Generate artifact attestation
-          #   uses: actions/attest-build-provenance@v2
-          #   with:
-          #     subject-name: answerhuang/fabulove
-          #     subject-digest: ${{ steps.push.outputs.digest }}
-          #     push-to-registry: true
+          # - name: Rename
+          #   id: rename
+          #   run: docker tag answerhuang/fabulove:${{ github.event.inputs.image_tag }} great_free/fabulove:${{ github.event.inputs.image_tag }}
+          # - name: Login Aliyun
+          #   id: login
+          #   run: echo ${DOCKER_PASSWORD_ALIYUN} | docker login --username ${DOCKER_USERNAME_ALIYUN} --password-stdin registry.cn-hangzhou.aliyuncs.com
+          # - name: Push to Aliyun
+          #   id: push_aliyun
+          #   run: docker push registry.cn-hangzhou.aliyuncs.com/great_free/fabulove:${{ github.event.inputs.image_tag }}
