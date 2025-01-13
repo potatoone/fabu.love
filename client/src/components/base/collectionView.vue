@@ -104,28 +104,23 @@ export default {
 }
 
 .collectionView-wrapper-ul {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(264px, 1fr));
+  gap: 20px;
+  padding: 0;
+  width: 100%;
 }
 
 .collectionView-wrapper .itemWrapper {
   position: relative;
   padding-bottom: 24px;
   background-color: white;
-  margin-top: 20px;
-  width: 264px;
+  width: 100%;
+  max-width: 264px;
+  margin: 0 auto;
   text-align: center;
   border-radius: 4px;
   transition: 0.5s;
-  margin-right: 2.6%;
-  /*&:nth-child(2n-1) {*/
-  /*margin-right: 2.6%;*/
-  /*}*/
-  /*&:nth-child(4n-2) {*/
-  /*margin-right: 2.6%;*/
-  /*}*/
 }
 
 .itemWrapper:hover {
