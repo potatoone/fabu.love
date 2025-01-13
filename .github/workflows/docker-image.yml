@@ -1,11 +1,5 @@
 name: Docker Image CI
 
-# on:
-#   push:
-#     branches: [ "master" ]
-#   pull_request:
-#     branches: [ "master" ]
-
 on:
   workflow_dispatch:
     inputs:
@@ -56,12 +50,12 @@ jobs:
               push: true
               tags: answerhuang/fabulove:${{ github.event.inputs.image_tag }}
               labels: ${{ steps.meta.outputs.labels }}
-          # - name: Rename
-          #   id: rename
-          #   run: docker tag answerhuang/fabulove:${{ github.event.inputs.image_tag }} great_free/fabulove:${{ github.event.inputs.image_tag }}
-          # - name: Login Aliyun
-          #   id: login
-          #   run: echo ${DOCKER_PASSWORD_ALIYUN} | docker login --username ${DOCKER_USERNAME_ALIYUN} --password-stdin registry.cn-hangzhou.aliyuncs.com
-          # - name: Push to Aliyun
-          #   id: push_aliyun
-          #   run: docker push registry.cn-hangzhou.aliyuncs.com/great_free/fabulove:${{ github.event.inputs.image_tag }}
+          - name: Rename
+            id: rename
+            run: docker tag answerhuang/fabulove:${{ github.event.inputs.image_tag }} great_free/fabulove:${{ github.event.inputs.image_tag }}
+          - name: Login Aliyun
+            id: login
+            run: docker login -u $DOCKER_USERNAME_ALIYUN -p $DOCKER_PASSWORD_ALIYUN registry.cn-hangzhou.aliyuncs.com
+          - name: Push to Aliyun
+            id: push_aliyun
+            run: docker push registry.cn-hangzhou.aliyuncs.com/great_free/fabulove:${{ github.event.inputs.image_tag }}
